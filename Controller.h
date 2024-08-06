@@ -17,8 +17,10 @@ typedef struct Cliente {
 typedef struct Profissional {
     int id;
     char nome[50];
+    char cpf[15];
     char especialidade[30];
     char telefone[9];
+    char data_nascimento[11];
     char endereco[50];
 } TProfissional;
 
@@ -31,37 +33,107 @@ typedef struct Horario{
     bool status;
 } THorario;
 
-//Cria cliente
-TCliente *cliente(int id, char *nome, char *cpf, char *telefone, char *data_nascimento, char *endereco);
-
-// Salva cliente no arquivo out, na posicao atual do cursor
-void salva_Cliente(TCliente *cliente, FILE *out);
-
-// Le um cliente do arquivo na posicao atual do cursor
-// Retorna um ponteiro para cliente lido do arquivo
-TCliente *le(FILE *in);
-
-// Imprime cliente
-void imprimeCliente(TCliente *cliente);
-
-TCliente *busca_cliente(FILE *in, int tam, int cod);
-
-TCliente *busca_binaria_cliente(FILE *in, int tam, int cod)
-
-// Retorna tamanho da struct em bytes
-int tamanho_registro();
-
-// retorna a quantidade de registros no arquivo
-int qtdRegistros(FILE *arq);
+//AREA GERAL
 
 //embaralha base de dados
 void embaralha(int *vet,int MAX,int trocas);
 
+//------------------------AREA CLIENTE----------------------------------------------------------------
+//Cria cliente
+TCliente *cliente(int id, char *nome, char *cpf, char *telefone, char *data_nascimento, char *endereco);
+
+// Salva cliente no arquivo base_clientes, na posicao atual do cursor
+void salva_Cliente(TCliente *cliente, FILE *base_clientes);
+
+// Le um cliente do arquivo na posicao atual do cursor, retorna um ponteiro para cliente lido do arquivo
+TCliente *le_cliente(FILE *base_clientes);
+
+// Imprime cliente
+void imprime_cliente(TCliente *cliente);
+
+//Busca sequencial de cliente
+TCliente *busca_cliente(FILE *base_clientes, int tam, int id);
+
+//Busca binaria de cliente
+TCliente *busca_binaria_cliente(FILE *base_clientes, int tam, int id);
+
+// Retorna tamanho da struct de clientes em bytes
+int tamanho_registro_cliente();
+
+// retorna a quantidade de registros no arquivo
+int qtdRegistros_cliente(FILE *base_clientes); 
+
 // Cria a base de dados desordenada pelo id
-void criarBaseDesordenada(FILE *out, int tam, int qtdTrocas);
+void criarBaseDesordenada_cliente(FILE *base_clientes, int tam, int qtdTrocas);
 
 // Imprime a base de dados
-void imprimirBase(FILE *out);
+void imprimirBase_cliente(FILE *base_clientes);
+
+//------------------------AREA PROFISSIONAIS----------------------------------------------------------------
+
+//Cria profissional
+TProfissional *profissional(int id, char *nome, char *cpf, char *especialidade, char *telefone, char *data_nascimento, char *endereco);
+
+// Salva profissional no arquivo base_profissionais, na posicao atual do cursor
+void salva_Profissional(TProfissional *profissional, FILE *base_profissionais);
+
+// Le um profissional do arquivo na posicao atual do cursor, retorna um ponteiro para profissional lido do arquivo
+TProfissional *le_profissional(FILE *base_profissionais);
+
+// Imprime profissional
+void imprime_profissional(TProfissional *profissional);
+
+// Imprime a base de dados de profissionais
+void imprimirBase_profissinal(FILE *base_profissionais);
+
+//Busca sequencial de profissional
+TProfissional *busca_profissional(FILE *base_profissionais, int tam, int id);
+
+//Busca binaria de cliente
+TCliente *busca_binaria_profissional(FILE *base_profissionais, int tam, int id);
+
+// Retorna tamanho da struct de profissionais em bytes
+int tamanho_registro_profissional();
+
+// retorna a quantidade de registros no arquivo
+int qtdRegistros_profissional(FILE *base_profissionais); 
+
+// Cria a base de dados desordenada pelo id
+void criarBaseDesordenada_profissional(FILE *base_profissionais, int tam, int qtdTrocas);
+
+
+
+//------------------------AREA HORARIOS----------------------------------------------------------------
+
+//Cria horarios
+THorario *horarios(int id, int id_cliente, int id_profissional, char *data, char *hora, bool status);
+
+// Salva profissional no arquivo base_horarios, na posicao atual do cursor
+void salva_Horarios(THorario *horario, FILE *base_horarios);
+
+// Le um horario do arquivo na posicao atual do cursor, retorna um ponteiro para o horario lido do arquivo
+THorario *le_horario(FILE *base_horarios);
+
+// Imprime horario
+void imprime_horario(THorario *horario);
+
+// Imprime a base de dados de horarios
+void imprimirBase_horario(FILE *base_horarios);
+
+//Busca sequencial de horario
+THorario *busca_horario(FILE *base_horarios, int tam, int id);
+
+//Busca binaria de horario
+THorario *busca_binaria_horario(FILE *base_horario, int tam, int id);
+
+// Retorna tamanho da struct de horario em bytes
+int tamanho_registro_horario();
+
+// retorna a quantidade de registros no arquivo
+int qtdRegistros_horario(FILE *base_horarios); 
+
+// Cria a base de dados desordenada pelo id
+void criarBaseDesordenada_horario(FILE *base_horario, int tam, int qtdTrocas);
 
 
 
