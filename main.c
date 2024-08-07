@@ -31,12 +31,11 @@ int main()
       return 1;
     }
 
-    //criarBaseDesordenada(clientesDB,10,4,"Cliente");
-    criaBaseOrdenada(clientesDB,10);
+    criarBaseDesordenada(clientesDB,50,400,"Cliente");
     imprimirBase_cliente(clientesDB);
 
-    //printf("Nome gerado: %s\n CPF %s \nNumero %s\n Data%s Data2 %s\n Endereco %s\n Especialidade %s", gerarNome(), gerarCPF(),gerarTelefone(),gerarDataNascimento(false),gerarDataNascimento(true),gerarEndereco(),gerarEspecialidade());
-
-
+    fclose(clientesDB);
+    fclose(profissinaisDB);
+    fclose(horariosDB);
     return 0;
 }
