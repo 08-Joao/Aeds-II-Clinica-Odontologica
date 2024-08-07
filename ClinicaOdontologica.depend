@@ -22,3 +22,26 @@
 	<time.h>
 	<string.h>
 
+1723054206 source:/home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/Controller.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<time.h>
+	"Controller.h"
+	<string.h>
+	<math.h>
+
+1723054534 /home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/Controller.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<string.h>
+
+1723054534 source:/home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	"Controller.h"
+	<time.h>
+	<string.h>
+

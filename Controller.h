@@ -58,6 +58,8 @@ char* gerarEspecialidade();
 
 void embaralha(int *vet,int MAX,int trocas);
 
+void criaBaseOrdenada(FILE *base,int tamanho);
+
 //------------------------AREA CLIENTE----------------------------------------------------------------
 //Cria cliente
 TCliente *criaCliente(int id, char *nome, char *cpf, char *telefone, char *data_nascimento, char *endereco);

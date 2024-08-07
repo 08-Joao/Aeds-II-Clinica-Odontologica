@@ -413,6 +413,18 @@ void criarBaseDesordenada(FILE *base_de_dados, int tam, int qtdTrocas,char *tipo
 
 
 }
+
+
+void criaBaseOrdenada(FILE *base,int tamanho){
+    TCliente *f;
+
+    for(int i = 0;i < tamanho;i++){
+      f = criaCliente(i + 1,gerarNome(),gerarCPF(),gerarTelefone(),gerarDataNascimento(false),gerarEndereco());
+      salva_cliente(f,base);
+      free(f);
+    }
+}
+
 //Busca sequencial de cliente
 TCliente *busca_cliente(FILE *base_clientes, int tam, int id){
     int comparacoes = 0;
