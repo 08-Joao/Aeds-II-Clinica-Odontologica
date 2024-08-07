@@ -261,9 +261,8 @@ void embaralha(int *vet,int max,int trocas) {
 // Cria cliente
 TCliente *criaCliente(int id, char *nome, char *cpf, char *telefone, char *data_nascimento, char *endereco) {
     TCliente *cliente = (TCliente *) malloc(sizeof(TCliente));
-    //inicializa espaco de memoria com ZEROS
-    if (cliente) memset(cliente, 0, sizeof(TCliente));
-    //copia valores para os campos de cliente
+    if (!cliente) return NULL; // Verificar se a alocação foi bem-sucedida
+    memset(cliente, 0, sizeof(TCliente));
     cliente->id = id;
     strcpy(cliente->nome, nome);
     strcpy(cliente->cpf, cpf);
@@ -274,15 +273,17 @@ TCliente *criaCliente(int id, char *nome, char *cpf, char *telefone, char *data_
     return cliente;
 }
 
+
 // Salva cliente arquivo base_clientes, na posicao atual do cursor
 void salva_cliente(TCliente *cliente, FILE *base_clientes) {
     fwrite(&cliente->id, sizeof(int), 1, base_clientes);
     //cliente->nome ao inves de &cliente->nome, pois string ja eh um ponteiro
-    fwrite(cliente->nome, sizeof(char), sizeof(cliente->nome), base_clientes);
-    fwrite(cliente->cpf, sizeof(char), sizeof(cliente->cpf), base_clientes);
-    fwrite(cliente->telefone, sizeof(char), sizeof(cliente->telefone), base_clientes);
-    fwrite(cliente->data_nascimento, sizeof(char), sizeof(cliente->data_nascimento), base_clientes);
-    fwrite(cliente->endereco, sizeof(char), sizeof(cliente->endereco), base_clientes);
+    fwrite(cliente->nome, sizeof(char), strlen(cliente->nome) + 1, base_clientes);
+    fwrite(cliente->cpf, sizeof(char), strlen(cliente->cpf) + 1, base_clientes);
+    fwrite(cliente->telefone, sizeof(char), strlen(cliente->telefone) + 1, base_clientes);
+    fwrite(cliente->data_nascimento, sizeof(char), strlen(cliente->data_nascimento) + 1, base_clientes);
+    fwrite(cliente->endereco, sizeof(char), strlen(cliente->endereco) + 1, base_clientes);
+
 }
 
 // Le um cliente do arquivo  na posicao atual do cursor, retorna um ponteiro para cliente lido do arquivo
@@ -319,17 +320,17 @@ void imprime_cliente(TCliente *cliente) {
 }
 
 //Imprime toda a base de dados de cliente
-void imprimirBase_cliente(FILE *base_clientes){
-printf("\nImprimindo a base de clientes...\n");
+void imprimirBase_cliente(FILE *base_clientes) {
+    printf("\nImprimindo a base de clientes...\n");
     rewind(base_clientes);
     TCliente *cliente;
 
-    while ((cliente = le_cliente(base_clientes)) != NULL)
-        imprime_cliente(base_clientes);
-
-    free(cliente);
-
+    while ((cliente = le_cliente(base_clientes)) != NULL) {
+        imprime_cliente(cliente);
+        free(cliente); // Liberar memória após imprimir
+    }
 }
+
 
 //Obtem o tamanho de um cliente
 int tamanho_registro_cliente() {

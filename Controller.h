@@ -9,7 +9,7 @@
 
 typedef struct Cliente {
     int id;
-    char nome[50];
+    char nome[100];
     char cpf[15];
     char telefone[16];
     char data_nascimento[11];
@@ -18,7 +18,7 @@ typedef struct Cliente {
 
 typedef struct Profissional {
     int id;
-    char nome[50];
+    char nome[100];
     char cpf[15];
     char especialidade[40];
     char telefone[16];

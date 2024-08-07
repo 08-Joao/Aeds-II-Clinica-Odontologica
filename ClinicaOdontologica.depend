@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1723050901 source:/home/joao/Desktop/ClinicaOdontologica/Controller.c
+1723053076 source:/home/joao/Desktop/ClinicaOdontologica/Controller.c
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
@@ -8,7 +8,7 @@
 	<string.h>
 	<math.h>
 
-1723051923 /home/joao/Desktop/ClinicaOdontologica/Controller.h
+1723053373 /home/joao/Desktop/ClinicaOdontologica/Controller.h
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
