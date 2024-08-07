@@ -1,6 +1,24 @@
 # depslib dependency file v1.0
-1722793325 source:/home/joao/Desktop/ClinicaOdontologica/Controller.c
+1723050901 source:/home/joao/Desktop/ClinicaOdontologica/Controller.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<time.h>
 	"Controller.h"
+	<string.h>
+	<math.h>
 
-1722793326 /home/joao/Desktop/ClinicaOdontologica/Controller.h
+1723051923 /home/joao/Desktop/ClinicaOdontologica/Controller.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<string.h>
+
+1723051955 source:/home/joao/Desktop/ClinicaOdontologica/main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	"Controller.h"
+	<time.h>
+	<string.h>
 
