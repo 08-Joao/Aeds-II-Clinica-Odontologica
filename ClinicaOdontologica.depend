@@ -22,7 +22,7 @@
 	<time.h>
 	<string.h>
 
-1723059951 source:/home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/Controller.c
+1723251067 source:/home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/Controller.c
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
@@ -31,13 +31,14 @@
 	<string.h>
 	<math.h>
 
-1723060207 /home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/Controller.h
+1723246689 /home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/Controller.h
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
 	<string.h>
+	<time.h>
 
-1723058948 source:/home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/main.c
+1723251113 source:/home/joao/Documents/TrabalhoAEDS-II-ClinicaOdontologica/main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>

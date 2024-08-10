@@ -31,9 +31,24 @@ int main()
       return 1;
     }
 
-    criarBaseDesordenada(clientesDB,50,400,"Cliente");
-    imprimirBase_cliente(clientesDB);
+    criarBaseDesordenada(clientesDB,50000,4200,"Cliente");
+    ordenarBase(clientesDB,"Cliente");
+   // imprimirBase(clientesDB,"Cliente");
 
+    criarBaseDesordenada(profissinaisDB,15,100,"Profissional");
+    ordenarBase(profissinaisDB,"Profissional");
+    imprimirBase(profissinaisDB,"Profissional");
+    adicionaPessoa(profissinaisDB,"Profissional");
+    imprimirBase(profissinaisDB,"Profissional");
+
+    //criarBaseHorarios(horariosDB,1500);
+    //ordenarBase(horariosDB,"Horario");
+   //imprimirBase(horariosDB,"Horario");
+
+
+    //agendarConsulta(clientesDB,profissinaisDB,horariosDB);
+   //imprimirBase(horariosDB,"Horario");
+   // agendarConsulta(clientesDB,profissinaisDB,horariosDB);
     fclose(clientesDB);
     fclose(profissinaisDB);
     fclose(horariosDB);
