@@ -27,18 +27,22 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 
+			// Definindo os caminhos dos arquivos de dados (clientes, profissionais, horários)
 			String caminhoClientes = "clientes.dat";
 			String caminhoProfissionais = "profissionais.dat";
 			String caminhoHorarios = "horarios.dat";
 
+			// Inicializando objetos File para os arquivos
 			File arquivoClientes = new File(caminhoClientes);
 			File arquivoProfissionais = new File(caminhoProfissionais);
 			File arquivoHorario = new File(caminhoHorarios);
 
+			// Flags que indicam se as bases já foram ordenadas
 			Boolean ordenadoCliente = false;
 			Boolean ordenadoProfissional = false;
 			Boolean ordenadoHorario = false;
 
+			// Verifica se os arquivos de dados existem, caso contrário, cria bases de dados desordenadas
 			if (!arquivoClientes.exists()) {
 				BaseDeDados.criarBasesDesordenada("Cliente", 100000);
 			}
@@ -51,11 +55,12 @@ public class Main {
 				BaseDeDados.criarBaseHorariosDesordenada();
 			}
 
-			Scanner sc = new Scanner(System.in);
+			Scanner sc = new Scanner(System.in); // Inicializa o Scanner para receber entradas do usuário
 			int choice = 1000;
 
+			// Loop do menu principal
 			do {
-				GeneralUsage.ClearConsole();
+				GeneralUsage.ClearConsole();// Limpa a tela e exibe o menu principal
 				System.out.println("--------------------------- MENU ---------------------------");
 				System.out.println("1. Ordenar Base");
 				System.out.println("2. Fazer Busca");
@@ -66,12 +71,14 @@ public class Main {
 				System.out.println("7. Imprimir Base");
 				System.out.println("0. Sair");
 				System.out.println("-------------------------- SAIDA --------------------------");
-				choice = sc.nextInt();
+				choice = sc.nextInt(); // Lê a escolha do usuário
 
+				// Estrutura switch para lidar com a escolha do menu
 				switch (choice) {
 				case 1:
 					int choice1 = 5;
 					do {
+						// Menu de ordenação
 						GeneralUsage.ClearConsole();
 						System.out.println("----------------- Ordenacao -----------------");
 						System.out.println("Qual base deseja ordenar?");
@@ -83,28 +90,31 @@ public class Main {
 						System.out.println("----------------- Ordenacao -----------------");
 						choice1 = sc.nextInt();
 
+						// Realiza a ordenação com base na escolha do usuário
 						switch (choice1) {
-						case 1:
+						case 1:// Ordenação das bases
 							System.out.println("Ordenando base de clientes...");
-							OrdenacaoPessoas.ordenarClientes();
+							OrdenacaoPessoas.ordenarClientes();// Ordena a base de clientes
 							ordenadoCliente = true;
 							break;
 						case 2:
 							System.out.println("Ordenando base de profissionais...");
-							OrdenacaoPessoas.ordenarProfissionais();
+							OrdenacaoPessoas.ordenarProfissionais(); // Ordena a base de profissionais
 							ordenadoProfissional = true;
 							break;
 						case 3:
 							System.out.println("Ordenando base de horarios...");
-							OrdenacaoHorarios.ordenarBaseHorarios();
+							OrdenacaoHorarios.ordenarBaseHorarios(); // Ordena a base de horários
 							ordenadoHorario = true;
 							break;
 						case 4:
+							// Ordena todas as bases
 							System.out.println("Ordenando todas as bases de dados...");
 							OrdenacaoPessoas.ordenarClientes();
 							OrdenacaoPessoas.ordenarProfissionais();
 							OrdenacaoHorarios.ordenarBaseHorarios();
 
+							// Atualiza as flags indicando que as bases estão ordenadas
 							ordenadoCliente = true;
 							ordenadoProfissional = true;
 							ordenadoHorario = true;
@@ -117,7 +127,7 @@ public class Main {
 						}
 					} while (choice1 != 5);
 					break;
-				case 2:
+				case 2:// Busca nas bases
 					GeneralUsage.ClearConsole();
 					int choice2 = 4;
 					do {
@@ -142,7 +152,7 @@ public class Main {
 							choice2_2 = sc.nextInt();
 
 							switch (choice2_2) {
-							case 1:
+							case 1:// Busca de cliente
 								System.out.println("Informe o ID do Cliente a ser procurado: ");
 								int client_id = sc.nextInt();
 								Cliente tempClie;
@@ -167,7 +177,7 @@ public class Main {
 
 								break;
 
-							case 2:
+							case 2: // Busca de profissional
 
 								System.out.println("Informe o ID do Profissional a ser procurado: ");
 								int prof_id = sc.nextInt();
@@ -194,13 +204,14 @@ public class Main {
 
 								break;
 
-							case 3:
+							case 3: // Busca de horário
 
 								sc.nextLine();
 								System.out.println("Informe a hora no formato dd/MM/yyyy HH:mm;");
 								String data = sc.nextLine();
 
 								try {
+									// Converte a string para um objeto Date
 									SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 									Date horario = sdf.parse(data);
 									System.out.println("Horario Pesquisado: " + horario);
@@ -250,7 +261,7 @@ public class Main {
 
 					} while (choice2 != 4);
 					break;
-				case 3:
+				case 3: // Adicionar pessoa (cliente ou profissional)
 					int choice3 = 3;
 					do {
 						GeneralUsage.ClearConsole();
@@ -263,9 +274,11 @@ public class Main {
 						choice3 = sc.nextInt();
 						switch (choice3) {
 						case 1:
+							// Adiciona um novo cliente
 							Gerenciamento.adicionarCliente();
 							break;
 						case 2:
+							// Adiciona um novo profissional
 							Gerenciamento.adicionarProfissional();
 							break;
 						case 3:
@@ -277,7 +290,7 @@ public class Main {
 					} while (choice3 != 3);
 
 					break;
-				case 4:
+				case 4: // Remover pessoa (cliente ou profissional)
 					int choice4 = 3;
 					do {
 						GeneralUsage.ClearConsole();
@@ -290,12 +303,14 @@ public class Main {
 
 						switch (choice4) {
 						case 1:
+							// Remove um cliente
 							System.out.println("Informe o ID do Cliente a ser removido; ");
 							int rem_clie = sc.nextInt();
 
 							Gerenciamento.removerCliente(rem_clie);
 							break;
 						case 2:
+							// Remove um profissional
 							System.out.println("Informe o ID do Profissional a ser removido; ");
 							int rem_prof = sc.nextInt();
 
@@ -310,7 +325,7 @@ public class Main {
 					} while (choice4 != 3);
 
 					break;
-				case 5:
+				case 5: // Agendar consulta
 					GeneralUsage.ClearConsole();
 					System.out.println("Informe a hora no formato dd/MM/yyyy HH:mm;");
 					String data = sc.nextLine();
@@ -326,7 +341,7 @@ public class Main {
 					Consultas.agendarConsulta(horario, id_clie, id_prof);
 
 					break;
-				case 6:
+				case 6: // Desmarcar consulta
 					GeneralUsage.ClearConsole();
 
 					System.out.println("Informe a hora no formato dd/MM/yyyy HH:mm;");
@@ -339,7 +354,7 @@ public class Main {
 
 					Consultas.removerConsulta(horario2, id_clie2, 0);
 					break;
-				case 7:
+				case 7: // Imprimir base de dados
 					int choice7 = 4;
 					GeneralUsage.ClearConsole();
 					do {
@@ -383,7 +398,7 @@ public class Main {
 				default:
 					System.out.println("Entrada não válida. Por favor, tente novamente.");
 				}
-			} while (choice != 0);
+			} while (choice != 0); // Fim do loop do menu principal
 
 			sc.close();
 

@@ -1,5 +1,6 @@
 package entities;
 
+// Importa classes necessárias para manipulação de arquivos, datas e listas
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -29,34 +30,39 @@ public class BaseDeDados {
 	private static final int TAMANHO_ENDERECO = 100;
 	private static final int TAMANHO_PROFISSAO = 50;
 
+	 // Define o tamanho total dos registros de clientes e profissionais
 	private static final int TAMANHO_REGISTRO_CLIENTE = TAMANHO_ID + TAMANHO_NOME + TAMANHO_CPF + TAMANHO_TELEFONE
 			+ TAMANHO_DATA_NASCIMENTO + TAMANHO_ENDERECO;
 	private static final int TAMANHO_REGISTRO_PROFISSIONAL = TAMANHO_ID + TAMANHO_NOME + TAMANHO_CPF + TAMANHO_TELEFONE
 			+ TAMANHO_DATA_NASCIMENTO + TAMANHO_ENDERECO + TAMANHO_PROFISSAO;
 
+	// Define o tamanho de registros de horários e lista de agendamentos
 	private static final int TAMANHO_HORARIO = 8;
 	private static final int TAMANHO_LISTA_AGENDADOS = 8;
 	private static final int TAMANHO_TOTAL_AGENDAMENTOS = TAMANHO_LISTA_AGENDADOS * 10;
 	private static final int TAMANHO_REGISTRO_HORARIO = TAMANHO_HORARIO + TAMANHO_TOTAL_AGENDAMENTOS;
 
+	// Caminhos dos arquivos para armazenar dados de clientes, profissionais e horários
 	private static final String CAMINHO_CLIENTES = "clientes.dat";
 	private static final String CAMINHO_PROFISSIONAIS = "profissionais.dat";
 	private static final String CAMINHO_HORARIOS = "horarios.dat";
 
+	// Cria bases de dados desordenadas para clientes ou profissionais
 	public static void criarBasesDesordenada(String type, int size) {
 		List<Cliente> clientes = new ArrayList<>();
 		List<Profissional> profissionais = new ArrayList<>();
 		Random random = new Random();
 
+		// Se o tipo for "Cliente", gera registros desordenados de clientes
 		if (type.compareToIgnoreCase("Cliente") == 0) {
 			for (int i = 1; i <= size; i++) {
 				Cliente cliente = new Cliente(i, GeneralUsage.gerarNome(), GeneralUsage.gerarCPF(),
 						GeneralUsage.gerarTelefone(), GeneralUsage.gerarDataNascimento(false),
-						GeneralUsage.gerarEndereco());
+						GeneralUsage.gerarEndereco()); // Cria um cliente
 				clientes.add(cliente);
 			}
 
-			Collections.shuffle(clientes);
+			Collections.shuffle(clientes); // Embaralha a lista de clientes
 
 			try (DataOutputStream dosClientes = new DataOutputStream(new FileOutputStream(CAMINHO_CLIENTES))) {
 				for (Cliente cliente : clientes) {
@@ -65,15 +71,16 @@ public class BaseDeDados {
 			} catch (IOException e) {
 				System.err.println("Erro ao manipular o arquivo de clientes: " + e.getMessage());
 			}
+		// Se o tipo for "Profissional", gera registros desordenados de profissionais
 		} else if (type.compareToIgnoreCase("Profissional") == 0) {
 			for (int i = 1; i <= size; i++) {
 				Profissional profissional = new Profissional(i, GeneralUsage.gerarNome(), GeneralUsage.gerarCPF(),
 						GeneralUsage.gerarTelefone(), GeneralUsage.gerarDataNascimento(true),
-						GeneralUsage.gerarEndereco(), GeneralUsage.gerarProfissao());
+						GeneralUsage.gerarEndereco(), GeneralUsage.gerarProfissao()); // Cria um profissional
 				profissionais.add(profissional);
 			}
 
-			Collections.shuffle(profissionais);
+			Collections.shuffle(profissionais); // Embaralha a lista de profissionais
 
 			try (DataOutputStream dosProfissionais = new DataOutputStream(
 					new FileOutputStream(CAMINHO_PROFISSIONAIS))) {
@@ -86,12 +93,14 @@ public class BaseDeDados {
 		}
 	}
 
+	// Cria uma base de horários desordenada
 	public static void criarBaseHorariosDesordenada() throws FileNotFoundException, IOException {
 		List<Horario> horarios = new ArrayList<>();
 		Date dataInicial = GeneralUsage.obterDataInicial();
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTime(dataInicial);
 
+		// Preenche a lista de horários com intervalos de 30 minutos em dias úteis
 		while (calendario.getTime().before(GeneralUsage.obterDataFinal())) {
 			if (calendario.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
 					&& calendario.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
@@ -125,6 +134,7 @@ public class BaseDeDados {
 		}
 	}
 
+	// Função para escrever um cliente em um arquivo com tamanho fixo
 	public static void escreverRegistroCliente(DataOutputStream dos, Cliente cliente) throws IOException {
 		dos.writeInt(cliente.getId());
 		dos.write(cliente.getNome().getBytes(StandardCharsets.UTF_8), 0,
@@ -145,6 +155,7 @@ public class BaseDeDados {
 		}
 	}
 
+	// Função para escrever um profissional em um arquivo com tamanho fixo
 	public static void escreverRegistroProfissional(DataOutputStream dos, Profissional profissional)
 			throws IOException {
 		dos.writeInt(profissional.getId());

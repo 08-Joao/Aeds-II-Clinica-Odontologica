@@ -10,6 +10,9 @@ import java.util.Scanner;
 import entities.Cliente;
 import entities.Profissional;
 
+
+//Classe responsável por gerenciar operações relacionadas a clientes e profissionais
+
 public class Gerenciamento {
 
 	private static final int TAMANHO_ID = 4;

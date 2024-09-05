@@ -35,7 +35,7 @@ public class OrdenacaoHorarios {
     
 
     
-    
+    // Método para ordenar a base de horários no arquivo
     public static void ordenarBaseHorarios() throws IOException {
         String arquivoTemp = "temp.dat";
         
@@ -72,6 +72,7 @@ public class OrdenacaoHorarios {
         }
     }
 
+     // Função recursiva de QuickSort para ordenar os registros diretamente no disco
     private static void quickSortDiscoHorarios(RandomAccessFile raf, long esquerda, long direita) throws IOException {
         if (esquerda < direita) {
             long pivo = obterHorario(raf, (esquerda + direita) / 2);
@@ -94,11 +95,13 @@ public class OrdenacaoHorarios {
         }
     }
 
+    // Função para obter o horário de um registro com base na posição
     private static long obterHorario(RandomAccessFile raf, long posicao) throws IOException {
         raf.seek(posicao * TAMANHO_REGISTRO_HORARIO);
         return raf.readLong();
     }
 
+    // Função para trocar dois registros no arquivo, usada pelo QuickSort
     private static void trocarRegistrosHorarios(RandomAccessFile raf, long i, long j) throws IOException {
         byte[] bufferI = new byte[TAMANHO_REGISTRO_HORARIO];
         byte[] bufferJ = new byte[TAMANHO_REGISTRO_HORARIO];

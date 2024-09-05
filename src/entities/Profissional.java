@@ -1,7 +1,7 @@
 package entities;
 
 public class Profissional extends Pessoa implements InformationOutput {
-   
+   //Classe Profissional que herda de classe Pessoa
     private static final int TAMANHO_PROFISSAO = 50;
 
     

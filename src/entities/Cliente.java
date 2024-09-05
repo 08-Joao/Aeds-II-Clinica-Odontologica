@@ -1,7 +1,7 @@
 package entities;
 
 public class Cliente extends Pessoa implements InformationOutput {
-   
+   //Classe de Cliente que herda da classe Pessoa
 
     public Cliente() {
         super();

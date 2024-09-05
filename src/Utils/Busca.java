@@ -184,12 +184,6 @@ public class Busca {
 
     
     
-    
-    
-    
-    
-    
-    
     private static Cliente lerRegistroCliente(DataInputStream dis) throws IOException {
         int id = dis.readInt();
         String nome = lerCampo(dis, TAMANHO_NOME);
