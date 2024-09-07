@@ -94,7 +94,7 @@ public class Main {
 						switch (choice1) {
 						case 1:// Ordenação das bases
 							System.out.println("Ordenando base de clientes...");
-							OrdenacaoPessoas.ordenarClientes();// Ordena a base de clientes
+							OrdenacaoPessoas.ordenarClientesNatural();// Ordena a base de clientes
 							ordenadoCliente = true;
 							break;
 						case 2:
