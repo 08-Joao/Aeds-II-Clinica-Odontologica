@@ -1,11 +1,11 @@
 package Utils;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-
-import entities.Horario;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class OrdenacaoHorarios {
 	// Tamanhos dos campos para garantir que os registros tenham tamanhos fixos
@@ -31,10 +31,6 @@ public class OrdenacaoHorarios {
     private static final String CAMINHO_PROFISSIONAIS = "profissionais.dat";
     private static final String CAMINHO_HORARIOS = "horarios.dat";
 
-    
-    
-
-    
     // Método para ordenar a base de horários no arquivo
     public static void ordenarBaseHorarios() throws IOException {
         String arquivoTemp = "temp.dat";
@@ -115,5 +111,193 @@ public class OrdenacaoHorarios {
         raf.write(bufferJ);
         raf.seek(j * TAMANHO_REGISTRO_HORARIO);
         raf.write(bufferI);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ // Método para ordenar a base de horários no arquivo
+    public static void ordenarBaseHorariosNatural() throws IOException {
+        String[] arquivosRuns = ordenacaoNatural(CAMINHO_HORARIOS, TAMANHO_REGISTRO_HORARIO, TAMANHO_HORARIO); 
+        intercalarRuns("horarios_ordenados.dat", arquivosRuns, TAMANHO_REGISTRO_HORARIO, TAMANHO_HORARIO);
+        substituirArquivo(CAMINHO_HORARIOS, "horarios_ordenados.dat");
+    }
+
+    // Método de ordenação natural
+    private static String[] ordenacaoNatural(String arquivo, int tamanhoRegistro, int tamanhoCampoId) throws IOException {
+        String tempPrefix = "temp_run_";
+        RandomAccessFile raf = new RandomAccessFile(arquivo, "r");
+
+        List<String> runFiles = new ArrayList<>();
+
+        // Passo 1: Identificação e criação de runs naturais
+        int runCounter = 0;
+        while (raf.getFilePointer() < raf.length()) {
+            String tempFileName = tempPrefix + runCounter++ + ".dat";
+            try (RandomAccessFile tempRun = new RandomAccessFile(tempFileName, "rw")) {
+                criarRunNatural(raf, tempRun, tamanhoRegistro, tamanhoCampoId);
+                runFiles.add(tempFileName); // Armazena o nome do arquivo temporário
+            }
+        }
+
+        raf.close();
+
+        // Converte a lista de nomes de arquivos para array
+        String[] arquivosRuns = runFiles.toArray(new String[0]);
+
+        System.out.println("Ordenação natural concluída.");
+
+        return arquivosRuns; // Retorna os nomes dos arquivos temporários para intercalação
+    }
+
+    // Método para criar um run natural
+    private static void criarRunNatural(RandomAccessFile raf, RandomAccessFile tempRun, int tamanhoRegistro,
+            int tamanhoCampoId) throws IOException {
+        byte[] buffer = new byte[tamanhoRegistro];
+        long ultimoHorario = Long.MIN_VALUE;
+
+        while (raf.getFilePointer() < raf.length()) {
+            long posicaoAtual = raf.getFilePointer();
+            raf.read(buffer);
+            long horarioAtual = obterHorarioFromBytes(buffer);
+
+            if (horarioAtual >= ultimoHorario) {
+                tempRun.write(buffer);
+                ultimoHorario = horarioAtual;
+            } else {
+                raf.seek(posicaoAtual); // Volta o ponteiro para a posição anterior
+                break; // Fim do run natural
+            }
+        }
+    }
+
+    // Método para obter o horário a partir dos bytes
+    private static long obterHorarioFromBytes(byte[] buffer) {
+        return ((long) (buffer[0] & 0xFF) << 56) |
+               ((long) (buffer[1] & 0xFF) << 48) |
+               ((long) (buffer[2] & 0xFF) << 40) |
+               ((long) (buffer[3] & 0xFF) << 32) |
+               ((long) (buffer[4] & 0xFF) << 24) |
+               ((long) (buffer[5] & 0xFF) << 16) |
+               ((long) (buffer[6] & 0xFF) << 8)  |
+               ((long) (buffer[7] & 0xFF));
+    }
+
+    // Método de intercalação de runs
+    public static void intercalarRuns(String arquivoSaida, String[] arquivosRuns, int tamanhoRegistro,
+            int tamanhoCampoId) throws IOException {
+        // Declara o array 'runs' no escopo do método
+        Run[] runs = new Run[arquivosRuns.length];
+
+        try (RandomAccessFile output = new RandomAccessFile(arquivoSaida, "rw")) {
+
+            // Fila de prioridade para armazenar o menor registro de cada run
+            PriorityQueue<RunRecord> pq = new PriorityQueue<>((r1, r2) -> Long.compare(r1.horario, r2.horario));
+
+            // Abre todos os arquivos dos runs e insere o primeiro registro de cada run na fila
+            for (int i = 0; i < arquivosRuns.length; i++) {
+                runs[i] = new Run(arquivosRuns[i], tamanhoRegistro);
+                if (runs[i].hasNext()) {
+                    pq.add(runs[i].next());
+                }
+            }
+
+            // Processa a fila de prioridade até que todos os runs tenham sido processados
+            while (!pq.isEmpty()) {
+                RunRecord menorRegistro = pq.poll();
+                output.write(menorRegistro.registro); // Escreve o menor registro no arquivo de saída
+
+                // Se o run de onde veio o menor registro ainda tiver mais registros, insere o próximo
+                if (menorRegistro.run.hasNext()) {
+                    pq.add(menorRegistro.run.next());
+                }
+            }
+        }
+
+        // Limpa os arquivos temporários após a intercalação
+        for (Run run : runs) {
+            run.close();
+            File tempFile = new File(run.fileName);
+            if (tempFile.exists()) {
+                tempFile.delete();
+            }
+        }
+
+        System.out.println("Intercalação concluída.");
+    }
+
+    // Classe auxiliar para representar um Run (subsequência)
+    static class Run {
+        String fileName;
+        RandomAccessFile raf;
+        int tamanhoRegistro;
+
+        Run(String fileName, int tamanhoRegistro) throws IOException {
+            this.fileName = fileName;
+            this.raf = new RandomAccessFile(fileName, "r");
+            this.tamanhoRegistro = tamanhoRegistro;
+        }
+
+        boolean hasNext() throws IOException {
+            return raf.getFilePointer() < raf.length();
+        }
+
+        RunRecord next() throws IOException {
+            byte[] buffer = new byte[tamanhoRegistro];
+            raf.read(buffer);
+            long horario = obterHorarioFromBytes(buffer);
+            return new RunRecord(horario, buffer, this);
+        }
+
+        void close() throws IOException {
+            raf.close();
+        }
+    }
+
+    // Classe auxiliar para representar um registro em um Run
+    static class RunRecord implements Comparable<RunRecord> {
+        long horario;
+        byte[] registro;
+        Run run;
+
+        RunRecord(long horario, byte[] registro, Run run) {
+            this.horario = horario;
+            this.registro = registro;
+            this.run = run;
+        }
+
+        @Override
+        public int compareTo(RunRecord other) {
+            return Long.compare(this.horario, other.horario);
+        }
+    }
+
+    public static void substituirArquivo(String arquivoOriginal, String arquivoOrdenado) throws IOException {
+        File arquivoOriginalFile = new File(arquivoOriginal);
+        File arquivoOrdenadoFile = new File(arquivoOrdenado);
+
+        if (!arquivoOrdenadoFile.exists()) {
+            throw new IOException("Arquivo ordenado não encontrado: " + arquivoOrdenado);
+        }
+
+        // Apagar o arquivo original
+        if (arquivoOriginalFile.exists()) {
+            if (!arquivoOriginalFile.delete()) {
+                throw new IOException("Não foi possível excluir o arquivo original: " + arquivoOriginal);
+            }
+        }
+
+        // Renomear o arquivo ordenado para o nome do arquivo original
+        if (!arquivoOrdenadoFile.renameTo(arquivoOriginalFile)) {
+            throw new IOException("Não foi possível renomear o arquivo ordenado para: " + arquivoOriginal);
+        }
+
+        System.out.println("Arquivo original substituído com sucesso.");
     }
 }

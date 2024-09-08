@@ -26,12 +26,8 @@ public class OrdenacaoPessoas {
     private static final int TAMANHO_REGISTRO_PROFISSIONAL = TAMANHO_ID + TAMANHO_NOME + TAMANHO_CPF + TAMANHO_TELEFONE
             + TAMANHO_DATA_NASCIMENTO + TAMANHO_ENDERECO + TAMANHO_PROFISSAO;
 
-    private static final int TAMANHO_HORARIO = 8; // long (para armazenar o horário em milissegundos)
-    private static final int TAMANHO_REGISTRO_HORARIO = TAMANHO_HORARIO;
-
     private static final String CAMINHO_CLIENTES = "clientes.dat";
     private static final String CAMINHO_PROFISSIONAIS = "profissionais.dat";
-    private static final String CAMINHO_HORARIOS = "horarios.dat";
 
     public static void ordenarClientes() throws IOException {
         ordenarDisco(CAMINHO_CLIENTES, TAMANHO_REGISTRO_CLIENTE, TAMANHO_ID);
@@ -132,15 +128,21 @@ public class OrdenacaoPessoas {
         return raf.readInt(); // Lê o inteiro diretamente
     }
 
-    // ----------------------------------------------------------------------NOVAS FUNÇÕES--------------------------
+    
+    
+    // ------------------------------ ATIVIDADE AVALIATIVA II ------------------------------
+    
+    
     public static void ordenarClientesNatural() throws IOException {
-        String[] arquivosRuns = ordenacaoNatural("clientes.dat", 100, 4); 
-        intercalarRuns("clientes_ordenados.dat", arquivosRuns, 100, 4); // Arquivo de saída final
+        String[] arquivosRuns = ordenacaoNatural("clientes.dat", TAMANHO_REGISTRO_CLIENTE, TAMANHO_ID); 
+        intercalarRuns("clientes_ordenados.dat", arquivosRuns, TAMANHO_REGISTRO_CLIENTE, TAMANHO_ID); // Arquivo de saída final
+        substituirArquivo("clientes.dat","clientes_ordenados.dat");
     }
 
     public static void ordenarProfissionaisNatural() throws IOException {
-        String[] arquivosRuns = ordenacaoNatural("CAMINHO_PROFISSIONAIS", 100, 4);
-        intercalarRuns("profissionais_ordenados.dat", arquivosRuns, 100, 4); // Arquivo de saída final
+        String[] arquivosRuns = ordenacaoNatural("profissionais.dat", TAMANHO_REGISTRO_PROFISSIONAL, TAMANHO_ID);
+        intercalarRuns("profissionais_ordenados.dat", arquivosRuns, TAMANHO_REGISTRO_PROFISSIONAL, TAMANHO_ID); // Arquivo de saída final
+        substituirArquivo("profissionais.dat","profissionais_ordenados.dat");
     }
 
     // Método de ordenação natural
@@ -183,7 +185,7 @@ public class OrdenacaoPessoas {
         while (raf.getFilePointer() < raf.length()) {
             long posicaoAtual = raf.getFilePointer();
             raf.read(buffer);
-            int idAtual = obterIdFromBytes(buffer, tamanhoCampoId);
+            int idAtual = obterIdFromBytes(buffer);
 
             if (idAtual >= ultimoId && registrosEmMemoria < MAX_REGISTROS_MEMORIA) {
                 tempRun.write(buffer);
@@ -197,7 +199,7 @@ public class OrdenacaoPessoas {
     }
 
     // Método para obter o ID a partir dos bytes
-    private static int obterIdFromBytes(byte[] buffer, int tamanhoCampoId) {
+    private static int obterIdFromBytes(byte[] buffer) {
         return ((buffer[0] & 0xFF) << 24) | ((buffer[1] & 0xFF) << 16) | ((buffer[2] & 0xFF) << 8) | (buffer[3] & 0xFF);
     }
 
@@ -265,7 +267,7 @@ public class OrdenacaoPessoas {
         RunRecord next() throws IOException {
             byte[] buffer = new byte[tamanhoRegistro];
             raf.read(buffer);
-            int id = obterIdFromBytes(buffer, 4); // Assume que o campo ID tem 4 bytes
+            int id = obterIdFromBytes(buffer); // Assume que o campo ID tem 4 bytes
             return new RunRecord(id, buffer, this);
         }
 
@@ -291,5 +293,27 @@ public class OrdenacaoPessoas {
             return Integer.compare(this.id, other.id);
         }
     }
+    
+    public static void substituirArquivo(String arquivoOriginal, String arquivoOrdenado) throws IOException {
+        File arquivoOriginalFile = new File(arquivoOriginal);
+        File arquivoOrdenadoFile = new File(arquivoOrdenado);
 
+        if (!arquivoOrdenadoFile.exists()) {
+            throw new IOException("Arquivo ordenado não encontrado: " + arquivoOrdenado);
+        }
+
+        // Apagar o arquivo original
+        if (arquivoOriginalFile.exists()) {
+            if (!arquivoOriginalFile.delete()) {
+                throw new IOException("Não foi possível excluir o arquivo original: " + arquivoOriginal);
+            }
+        }
+
+        // Renomear o arquivo ordenado para o nome do arquivo original
+        if (!arquivoOrdenadoFile.renameTo(arquivoOriginalFile)) {
+            throw new IOException("Não foi possível renomear o arquivo ordenado para: " + arquivoOriginal);
+        }
+
+        System.out.println("Arquivo original substituído com sucesso.");
+    }
 }
