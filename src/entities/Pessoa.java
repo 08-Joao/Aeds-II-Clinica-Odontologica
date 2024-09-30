@@ -3,14 +3,17 @@ package entities;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
-public abstract class Pessoa implements InformationOutput {
-    
-    private static final int TAMANHO_NOME = 100;
-    private static final int TAMANHO_CPF = 15;
-    private static final int TAMANHO_TELEFONE = 14; // 14 caracteres com espaço e hífen
-    private static final int TAMANHO_DATA_NASCIMENTO = 10;
-    private static final int TAMANHO_ENDERECO = 100;
+import utils.TamanhoCampo;
 
+public abstract class Pessoa implements InformationOutput {
+
+    private static final int TAMANHO_ID = TamanhoCampo.ID.valor;
+    private static final int TAMANHO_NOME = TamanhoCampo.NOME.valor;;
+    private static final int TAMANHO_CPF = TamanhoCampo.CPF.valor;
+    private static final int TAMANHO_TELEFONE = TamanhoCampo.TELEFONE.valor;
+    private static final int TAMANHO_DATA_NASCIMENTO = TamanhoCampo.DATA_NASCIMENTO.valor;
+    private static final int TAMANHO_ENDERECO = TamanhoCampo.ENDERECO.valor;
+    
     private Integer id;
     private String nome; 
     private String cpf; 

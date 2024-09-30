@@ -3,51 +3,145 @@ package entities;
 // Importa classes necessárias para manipulação de arquivos, datas e listas
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
-import Utils.GeneralUsage;
+import utils.CaminhoArquivo;
+import utils.GeneralUsage;
+import utils.TamanhoCampo;
 
 public class BaseDeDados {
 
-	// Tamanhos dos campos para garantir que os registros tenham tamanhos fixos
-	private static final int TAMANHO_ID = 4; // int
-	private static final int TAMANHO_NOME = 100;
-	private static final int TAMANHO_CPF = 15;
-	private static final int TAMANHO_TELEFONE = 14;
-	private static final int TAMANHO_DATA_NASCIMENTO = 10;
-	private static final int TAMANHO_ENDERECO = 100;
-	private static final int TAMANHO_PROFISSAO = 50;
+	private static final int TAMANHO_ID = TamanhoCampo.ID.valor;
+    private static final int TAMANHO_NOME = TamanhoCampo.NOME.valor;;
+    private static final int TAMANHO_CPF = TamanhoCampo.CPF.valor;
+    private static final int TAMANHO_TELEFONE = TamanhoCampo.TELEFONE.valor;
+    private static final int TAMANHO_DATA_NASCIMENTO = TamanhoCampo.DATA_NASCIMENTO.valor;
+    private static final int TAMANHO_ENDERECO = TamanhoCampo.ENDERECO.valor;
+    private static final int TAMANHO_PROFISSAO = TamanhoCampo.PROFISSAO.valor;
 
-	 // Define o tamanho total dos registros de clientes e profissionais
-	private static final int TAMANHO_REGISTRO_CLIENTE = TAMANHO_ID + TAMANHO_NOME + TAMANHO_CPF + TAMANHO_TELEFONE
-			+ TAMANHO_DATA_NASCIMENTO + TAMANHO_ENDERECO;
-	private static final int TAMANHO_REGISTRO_PROFISSIONAL = TAMANHO_ID + TAMANHO_NOME + TAMANHO_CPF + TAMANHO_TELEFONE
-			+ TAMANHO_DATA_NASCIMENTO + TAMANHO_ENDERECO + TAMANHO_PROFISSAO;
+    private static final int TAMANHO_REGISTRO_CLIENTE = TamanhoCampo.REGISTRO_CLIENTE.valor;
+    private static final int TAMANHO_REGISTRO_PROFISSIONAL = TamanhoCampo.REGISTRO_PROFISSIONAL.valor;
 
-	// Define o tamanho de registros de horários e lista de agendamentos
-	private static final int TAMANHO_HORARIO = 8;
-	private static final int TAMANHO_LISTA_AGENDADOS = 8;
-	private static final int TAMANHO_TOTAL_AGENDAMENTOS = TAMANHO_LISTA_AGENDADOS * 10;
-	private static final int TAMANHO_REGISTRO_HORARIO = TAMANHO_HORARIO + TAMANHO_TOTAL_AGENDAMENTOS;
+    private static final int TAMANHO_HORARIO = TamanhoCampo.HORARIO.valor;
+    private static final int TAMANHO_LISTA_AGENDADOS = TamanhoCampo.LISTA_AGENDADOS.valor; 
+    private static final int TAMANHO_TOTAL_AGENDAMENTOS = TamanhoCampo.TOTAL_AGENDAMENTOS.valor; 
+    private static final int TAMANHO_REGISTRO_HORARIO = TamanhoCampo.REGISTRO_HORARIO.valor;
 
-	// Caminhos dos arquivos para armazenar dados de clientes, profissionais e horários
-	private static final String CAMINHO_CLIENTES = "clientes.dat";
-	private static final String CAMINHO_PROFISSIONAIS = "profissionais.dat";
-	private static final String CAMINHO_HORARIOS = "horarios.dat";
+  
+    private static final String CAMINHO_CLIENTES = CaminhoArquivo.CLIENTES.caminho;
+    private static final String CAMINHO_PROFISSIONAIS = CaminhoArquivo.PROFISSIONAIS.caminho;
+    private static final String CAMINHO_HORARIOS = CaminhoArquivo.HORARIOS.caminho;
 
-	// Cria bases de dados desordenadas para clientes ou profissionais
+    
+    // ATIVIDADE AVALIATIVA 3
+    
+	public static Hashtable<Integer, Integer> cHt = new Hashtable(); // Hash Table da base de Clientes
+	public static Hashtable<Integer, Integer> pHt = new Hashtable(); // Hash Table da base de Profissionais
+	public static Hashtable<Date, Integer> hHt = new Hashtable(); // Hash Table da base dos Horários
+	
+	
+	public static void mapearHash(String type) {
+		Integer count = 1;
+		if(type.equalsIgnoreCase("Cliente")) {
+			try (DataInputStream disClientes = new DataInputStream(new FileInputStream(CAMINHO_CLIENTES))) {
+				while (disClientes.available() > 0) {
+					Cliente cliente = lerRegistroCliente(disClientes);
+					cHt.put(cliente.getId(), count);
+					count++;
+				}							
+			} catch (IOException e) {
+				System.err.println("Erro ao manipular o arquivo de clientes: " + e.getMessage());
+			}
+		}else if(type.equalsIgnoreCase("Profissional")) {
+			try (DataInputStream disProfissionais = new DataInputStream(new FileInputStream(CAMINHO_PROFISSIONAIS))) {
+				while (disProfissionais.available() > 0) {
+					Profissional profissional = lerRegistroProfissional(disProfissionais);
+					pHt.put(profissional.getId(), count);
+					count++;
+				}
+			} catch (IOException e) {
+				System.err.println("Erro ao manipular o arquivo de clientes: " + e.getMessage());
+			}
+		}else if(type.equalsIgnoreCase("Horario")) {
+			try (DataInputStream disHorarios = new DataInputStream(new FileInputStream(CAMINHO_HORARIOS))) {
+				while (disHorarios.available() > 0) {
+					Horario horario = lerRegistroHorario(disHorarios);
+					hHt.put(horario.getHorario(), count);
+					count++;
+				}
+			} catch (IOException e) {
+				System.err.println("Erro ao manipular o arquivo de clientes: " + e.getMessage());
+			}
+		}
+	}
+	
+	public static Integer getPosHash(String type, Integer Id) {
+		if(type.compareToIgnoreCase("Cliente") == 0) {
+			return cHt.get(Id);
+		}else if(type.compareToIgnoreCase("Profissional") == 0) {
+			return pHt.get(Id);
+		}
+		return null;
+	}
+	
+	public static Integer getPosHorarioHash(Date horario) {
+		return hHt.get(horario);
+	}
+	
+	public static void hashAdd(String type, Integer Id) {
+		if(type.equalsIgnoreCase("Cliente")) {
+			cHt.put(Id, cHt.size() + 1);
+		}else if(type.equalsIgnoreCase("Profissional")) {
+			pHt.put(Id, pHt.size() + 1);
+		}
+	}
+	
+	
+	public static void hashRemove(String type, Integer Id) {
+		Integer pos;
+		
+		if(type.equalsIgnoreCase("Cliente")) {
+			pos = cHt.remove(Id);
+			if (pos != null) {
+		        // Decrementa todas as posições superiores
+		        cHt.forEach((hashId, hashPos) -> {
+		            if (hashPos > pos) {
+		            	cHt.put(hashId, hashPos - 1); // Decrementa a posição
+		            }
+		        });
+		    }
+		}else if(type.equalsIgnoreCase("Profissional")) {
+			pos = pHt.remove(Id);			
+			if (pos != null) {
+		        // Decrementa todas as posições superiores
+				pHt.forEach((hashId, hashPos) -> {
+		            if (hashPos > pos) {
+		            	pHt.put(hashId, hashPos - 1); // Decrementa a posição
+		            }
+		        });
+		    }
+		}
+		
+	}
+
+	
+	public static void imprimeHash() {
+		cHt.forEach((chave, valor) -> {
+		    System.out.println("Id: " + chave + ", Posicao: " + valor);
+		});
+	}
+    
 	public static void criarBasesDesordenada(String type, int size) {
 		List<Cliente> clientes = new ArrayList<>();
 		List<Profissional> profissionais = new ArrayList<>();
@@ -65,9 +159,9 @@ public class BaseDeDados {
 			Collections.shuffle(clientes); // Embaralha a lista de clientes
 
 			try (DataOutputStream dosClientes = new DataOutputStream(new FileOutputStream(CAMINHO_CLIENTES))) {
-				for (Cliente cliente : clientes) {
+				for (Cliente cliente : clientes) {					
 					escreverRegistroCliente(dosClientes, cliente);
-				}
+				}								
 			} catch (IOException e) {
 				System.err.println("Erro ao manipular o arquivo de clientes: " + e.getMessage());
 			}

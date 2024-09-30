@@ -1,8 +1,3 @@
-//Feito por: 
-//	Joao Victor Vieira Amora de Figueiredo 23.1.8019
-//	Henrique Angelo Duarte Alves 23.1.8028
-//Turma de Sistemas de Informação
-
 package aplication;
 
 import java.io.File;
@@ -11,16 +6,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-import Utils.Busca;
-import Utils.Consultas;
-import Utils.GeneralUsage;
-import Utils.Gerenciamento;
-import Utils.OrdenacaoHorarios;
-import Utils.OrdenacaoPessoas;
 import entities.BaseDeDados;
 import entities.Cliente;
 import entities.Horario;
 import entities.Profissional;
+import utils.Busca;
+import utils.Consultas;
+import utils.GeneralUsage;
+import utils.Gerenciamento;
+import utils.OrdenacaoHorarios;
+import utils.OrdenacaoPessoas;
 
 public class Main {
 
@@ -41,11 +36,15 @@ public class Main {
             Boolean ordenadoProfissional = false;
             Boolean ordenadoHorario = false;
 
+            
+            
+            
             // Verifica se os arquivos de dados existem, caso contrário, cria bases de dados desordenadas
             if (!arquivoClientes.exists()) {
-                BaseDeDados.criarBasesDesordenada("Cliente", 100000);
+                BaseDeDados.criarBasesDesordenada("Cliente", 100);             
             }
-
+            
+           
             if (!arquivoProfissionais.exists()) {
                 BaseDeDados.criarBasesDesordenada("Profissional", 500);
             }
@@ -54,12 +53,17 @@ public class Main {
                 BaseDeDados.criarBaseHorariosDesordenada();
             }
 
+            // Inicialização dos Hashes
+            BaseDeDados.mapearHash("Cliente");
+            BaseDeDados.mapearHash("Profissional");
+            BaseDeDados.mapearHash("Horario");
+
             Scanner sc = new Scanner(System.in); // Inicializa o Scanner para receber entradas do usuário
             int choice = 1000;
 
             // Loop do menu principal
             do {
-                GeneralUsage.ClearConsole(); // Limpa a tela e exibe o menu principal
+                GeneralUsage.ClearConsole(); // Limpa a tela e exibe o menu principal               
                 System.out.println("--------------------------- MENU ---------------------------");
                 System.out.println("1. Ordenar Base");
                 System.out.println("2. Fazer Busca");
@@ -190,12 +194,13 @@ public class Main {
                             System.out.println("----------------- Busca -----------------");
                             System.out.println("1. Busca Sequencial");
                             System.out.println("2. Busca Binaria");
-                            System.out.println("3. Voltar");
+                            System.out.println("3. Busca por Hash");
+                            System.out.println("4. Voltar");
                             System.out.println("----------------- Busca -----------------");
                             choice2 = sc.nextInt();
 
-                            if (choice2 == 1 || choice2 == 2) {
-                                int choice2_2 = 4;
+                            if (choice2 == 1 || choice2 == 2 || choice2 == 3) {
+                                int choice2_2 = 5;
 
                                 do {
                                     GeneralUsage.ClearConsole();
@@ -215,11 +220,13 @@ public class Main {
 
                                             if (choice2 == 1) {
                                                 tempClie = Busca.sequencialCliente(client_id);
-                                            } else {
+                                            } else if(choice2 == 2){
                                                 if (!ordenadoCliente) {
                                                     OrdenacaoPessoas.ordenarClientes();
                                                 }
                                                 tempClie = Busca.binariaCliente(client_id);
+                                            }else {
+                                            	tempClie = Busca.hashCliente(client_id);
                                             }
 
                                             if (tempClie != null) {
@@ -240,11 +247,13 @@ public class Main {
 
                                             if (choice2 == 1) {
                                                 tempProf = Busca.sequencialProfissional(prof_id);
-                                            } else {
+                                            } else if(choice2 == 2) {
                                                 if (!ordenadoProfissional) {
                                                     OrdenacaoPessoas.ordenarProfissionais();
                                                 }
                                                 tempProf = Busca.binariaProfissional(prof_id);
+                                            }else {
+                                            	tempProf = Busca.hashProfissional(prof_id);
                                             }
 
                                             if (tempProf != null) {
@@ -273,11 +282,13 @@ public class Main {
 
                                                 if (choice2 == 1) {
                                                     tempHorario = Busca.sequencialHorario(horario);
-                                                } else {
+                                                } else if(choice2 == 2){
                                                     if (!ordenadoHorario) {
                                                         OrdenacaoHorarios.ordenarBaseHorarios();
                                                     }
                                                     tempHorario = Busca.binariaHorario(horario);
+                                                }else {
+                                                	tempHorario = Busca.hashHorario(horario);
                                                 }
 
                                                 if (tempHorario != null) {
@@ -302,11 +313,11 @@ public class Main {
                                             break;
                                     }
                                 } while (choice2_2 != 4);
-                            } else if (choice2 != 3) {
+                            } else if (choice2 != 4) {
                                 System.out.println("Entrada inválida.");
                             }
 
-                        } while (choice2 != 3);
+                        } while (choice2 != 4);
 
                         break;
 
@@ -458,4 +469,3 @@ public class Main {
         }
     }
 }
-
