@@ -41,12 +41,12 @@ public class Main {
             
             // Verifica se os arquivos de dados existem, caso contrário, cria bases de dados desordenadas
             if (!arquivoClientes.exists()) {
-                BaseDeDados.criarBasesDesordenada("Cliente", 100);             
+                BaseDeDados.criarBasesDesordenada("Cliente", 100000);             
             }
             
            
             if (!arquivoProfissionais.exists()) {
-                BaseDeDados.criarBasesDesordenada("Profissional", 500);
+                BaseDeDados.criarBasesDesordenada("Profissional", 5000);
             }
 
             if (!arquivoHorario.exists()) {
