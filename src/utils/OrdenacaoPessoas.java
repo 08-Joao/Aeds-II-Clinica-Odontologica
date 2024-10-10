@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import entities.BaseDeDados;
+import entities.TabelaHashDisco;
 
 public class OrdenacaoPessoas {
 	private static final int TAMANHO_ID = TamanhoCampo.ID.valor;
@@ -36,8 +37,7 @@ public class OrdenacaoPessoas {
 	private static final int MAX_REGISTROS_MEMORIA = 200;
 
 	public static void ordenarClientes() throws IOException {
-		ordenarDisco(CAMINHO_CLIENTES, TAMANHO_REGISTRO_CLIENTE, TAMANHO_ID);
-		BaseDeDados.mapearHash("Cliente");
+		ordenarDisco(CAMINHO_CLIENTES, TAMANHO_REGISTRO_CLIENTE, TAMANHO_ID);		
 	}
 
 	public static void ordenarProfissionais() throws IOException {
@@ -143,8 +143,7 @@ public class OrdenacaoPessoas {
 		String[] arquivosRuns = ordenacaoNatural("clientes.dat", TAMANHO_REGISTRO_CLIENTE, TAMANHO_ID);
 		intercalarRuns("clientes_ordenados.dat", arquivosRuns, TAMANHO_REGISTRO_CLIENTE, TAMANHO_ID); // Arquivo de
 																										// saída final
-		substituirArquivo("clientes.dat", "clientes_ordenados.dat");
-		BaseDeDados.mapearHash("Cliente");
+		substituirArquivo("clientes.dat", "clientes_ordenados.dat");		
 	}
 
 	public static void ordenarProfissionaisNatural() throws IOException {

@@ -1,12 +1,12 @@
 package entities;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 
 import utils.TamanhoCampo;
 
-public abstract class Pessoa implements InformationOutput {
-
+public abstract class Pessoa implements Serializable, InformationOutput {
+	private static final long serialVersionUID = 1L;
+	
     private static final int TAMANHO_ID = TamanhoCampo.ID.valor;
     private static final int TAMANHO_NOME = TamanhoCampo.NOME.valor;;
     private static final int TAMANHO_CPF = TamanhoCampo.CPF.valor;
@@ -41,6 +41,16 @@ public abstract class Pessoa implements InformationOutput {
         return nome;
     }
 
+    public String getNomeSemEspaco() {
+        String novoNome = this.nome;  // Supondo que o atributo nome já exista na classe
+        
+        // Remover espaços apenas do final da string
+        novoNome = novoNome.replaceAll("\\s+$", "");
+        
+        return novoNome;
+    }
+
+    
     public String getCpf() {
         return cpf;
     }

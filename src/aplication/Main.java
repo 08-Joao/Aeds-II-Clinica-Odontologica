@@ -10,6 +10,7 @@ import entities.BaseDeDados;
 import entities.Cliente;
 import entities.Horario;
 import entities.Profissional;
+import entities.TabelaHashDisco;
 import utils.Busca;
 import utils.Consultas;
 import utils.GeneralUsage;
@@ -25,7 +26,8 @@ public class Main {
             String caminhoClientes = "clientes.dat";
             String caminhoProfissionais = "profissionais.dat";
             String caminhoHorarios = "horarios.dat";
-
+            TabelaHashDisco tabelaHash = new TabelaHashDisco(30);   
+            
             // Inicializando objetos File para os arquivos
             File arquivoClientes = new File(caminhoClientes);
             File arquivoProfissionais = new File(caminhoProfissionais);
@@ -37,26 +39,31 @@ public class Main {
             Boolean ordenadoHorario = false;
 
             
+           
             
             
             // Verifica se os arquivos de dados existem, caso contrário, cria bases de dados desordenadas
             if (!arquivoClientes.exists()) {
-                BaseDeDados.criarBasesDesordenada("Cliente", 100000);             
+                BaseDeDados.criarBasesDesordenada("Cliente", 2518,tabelaHash);             
             }
-            
-           
+                
             if (!arquivoProfissionais.exists()) {
-                BaseDeDados.criarBasesDesordenada("Profissional", 5000);
+                BaseDeDados.criarBasesDesordenada("Profissional", 5000,tabelaHash);
             }
 
             if (!arquivoHorario.exists()) {
                 BaseDeDados.criarBaseHorariosDesordenada();
             }
 
+            
+                
+            tabelaHash.mapearClientesParaHash();           
+            
+//            test.imprimeInformacao();
             // Inicialização dos Hashes
-            BaseDeDados.mapearHash("Cliente");
-            BaseDeDados.mapearHash("Profissional");
-            BaseDeDados.mapearHash("Horario");
+//            BaseDeDados.mapearHash("Cliente");
+//            BaseDeDados.mapearHash("Profissional");
+//            BaseDeDados.mapearHash("Horario");
 
             Scanner sc = new Scanner(System.in); // Inicializa o Scanner para receber entradas do usuário
             int choice = 1000;
@@ -113,9 +120,13 @@ public class Main {
                                         switch(choice01) {
                                             case 1:
                                                 OrdenacaoPessoas.ordenarClientes();
+                                                tabelaHash.mapearClientesParaHash();
+                                                System.out.println("BBBBBBBBBBBB");
                                                 break;
                                             case 2:
                                                 OrdenacaoPessoas.ordenarClientesNatural();
+                                                System.out.println("AKSJDNJASD");
+                                                tabelaHash.mapearClientesParaHash();
                                                 break;
                                             default:
                                                 System.out.println("Escolha inválida...");
@@ -161,11 +172,13 @@ public class Main {
                                                 OrdenacaoPessoas.ordenarClientes();
                                                 OrdenacaoPessoas.ordenarProfissionais();
                                                 OrdenacaoHorarios.ordenarBaseHorarios();
+                                                tabelaHash.mapearClientesParaHash();
                                                 break;
                                             case 2:
                                                 OrdenacaoPessoas.ordenarClientesNatural();
                                                 OrdenacaoPessoas.ordenarProfissionaisNatural();
                                                 OrdenacaoHorarios.ordenarBaseHorariosNatural();
+                                                tabelaHash.mapearClientesParaHash();
                                                 break;
                                             default:
                                                 System.out.println("Escolha inválida...");
@@ -216,17 +229,18 @@ public class Main {
                                         case 1: // Busca de cliente
                                             System.out.println("Informe o ID do Cliente a ser procurado: ");
                                             int client_id = sc.nextInt();
-                                            Cliente tempClie;
+                                            Cliente tempClie = null;
 
                                             if (choice2 == 1) {
                                                 tempClie = Busca.sequencialCliente(client_id);
                                             } else if(choice2 == 2){
                                                 if (!ordenadoCliente) {
                                                     OrdenacaoPessoas.ordenarClientes();
+                                                    tabelaHash.mapearClientesParaHash();
                                                 }
                                                 tempClie = Busca.binariaCliente(client_id);
                                             }else {
-                                            	tempClie = Busca.hashCliente(client_id);
+                                            	tempClie = tabelaHash.buscar(client_id);                                            	
                                             }
 
                                             if (tempClie != null) {
@@ -243,7 +257,7 @@ public class Main {
                                         case 2: // Busca de profissional
                                             System.out.println("Informe o ID do Profissional a ser procurado: ");
                                             int prof_id = sc.nextInt();
-                                            Profissional tempProf;
+                                            Profissional tempProf = null;
 
                                             if (choice2 == 1) {
                                                 tempProf = Busca.sequencialProfissional(prof_id);
@@ -252,9 +266,10 @@ public class Main {
                                                     OrdenacaoPessoas.ordenarProfissionais();
                                                 }
                                                 tempProf = Busca.binariaProfissional(prof_id);
-                                            }else {
-                                            	tempProf = Busca.hashProfissional(prof_id);
                                             }
+//                                            else {
+//                                            	tempProf = Busca.hashProfissional(prof_id);
+//                                            }
 
                                             if (tempProf != null) {
                                                 GeneralUsage.ClearConsole();
@@ -278,7 +293,7 @@ public class Main {
                                                 Date horario = sdf.parse(data);
                                                 System.out.println("Horario Pesquisado: " + horario);
 
-                                                Horario tempHorario;
+                                                Horario tempHorario = null;
 
                                                 if (choice2 == 1) {
                                                     tempHorario = Busca.sequencialHorario(horario);
@@ -287,9 +302,10 @@ public class Main {
                                                         OrdenacaoHorarios.ordenarBaseHorarios();
                                                     }
                                                     tempHorario = Busca.binariaHorario(horario);
-                                                }else {
-                                                	tempHorario = Busca.hashHorario(horario);
                                                 }
+//                                                else {
+//                                                	tempHorario = Busca.hashHorario(horario);
+//                                                }
 
                                                 if (tempHorario != null) {
                                                     System.out.println("Horário encontrado: ");
@@ -335,7 +351,7 @@ public class Main {
     						switch (choice3) {
     						case 1:
     							// Adiciona um novo cliente
-    							Gerenciamento.adicionarCliente();
+    							Gerenciamento.adicionarCliente(tabelaHash);
     							break;
     						case 2:
     							// Adiciona um novo profissional
@@ -364,10 +380,29 @@ public class Main {
     						switch (choice4) {
     						case 1:
     							// Remove um cliente
-    							System.out.println("Informe o ID do Cliente a ser removido; ");
-    							int rem_clie = sc.nextInt();
+        						System.out.println("----------------- Tipo Remoção -----------------");
+        						System.out.println("1. Remoção Normal");
+        						System.out.println("2. Remoção HashTable");
+        						System.out.println("3. Voltar");
+        						System.out.println("----------------- Tipo Remoção -----------------");
+        						int remocao = sc.nextInt();
+        						switch(remocao) {
+	        						case 1:
+	        							System.out.println("Informe o ID do Cliente a ser removido; ");
+	        							int rem_clie = sc.nextInt();
 
-    							Gerenciamento.removerCliente(rem_clie);
+	        							Gerenciamento.removerCliente(rem_clie,tabelaHash);
+	        							break;
+	        						case 2:
+	        							System.out.println("Informe o ID do Cliente a ser removido; ");
+	        							int rem_clie2 = sc.nextInt();
+
+	        							tabelaHash.remover(rem_clie2);
+	        							break;
+	        						default: 
+	        							break;
+        						}
+    							
     							break;
     						case 2:
     							// Remove um profissional
@@ -416,7 +451,7 @@ public class Main {
                         break;
 
                     case 7: // Imprimir base
-                    	int choice7 = 4;
+                    	int choice7 = 5;
     					GeneralUsage.ClearConsole();
     					do {
 
@@ -425,7 +460,8 @@ public class Main {
     						System.out.println("1. Base dos Clientes");
     						System.out.println("2. Base dos Profissionais");
     						System.out.println("3. Base dos Horários");
-    						System.out.println("4. Voltar");
+    						System.out.println("4. Hash Table Clientes");
+    						System.out.println("5. Voltar");
     						System.out.println("----------------- Impressão -----------------");
     						choice7 = sc.nextInt();
     						switch (choice7) {
@@ -445,12 +481,17 @@ public class Main {
     							BaseDeDados.imprimirBaseDeHorarios();
     							break;
     						case 4:
+    							GeneralUsage.ClearConsole();
+    							System.out.println("Imprimindo HashTable Clientes...");
+    							tabelaHash.exibirTabelaHash();
+    							break;
+    						case 5:
     							System.out.println("Retornando ao menu principal...");
     							break;
     						default:
     							System.out.println("Entrada inválida.");
     						}
-    					} while (choice7 != 4);
+    					} while (choice7 != 5);
                         break;
 
                     case 0:

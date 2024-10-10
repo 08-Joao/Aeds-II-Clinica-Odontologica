@@ -1,9 +1,11 @@
 
 package entities;
 
+import java.io.Serializable;
+
 import utils.TamanhoCampo;
 
-public class Profissional extends Pessoa implements InformationOutput {
+public class Profissional extends Pessoa implements InformationOutput, Serializable {
    //Classe Profissional que herda de classe Pessoa
     private static final int TAMANHO_PROFISSAO = TamanhoCampo.PROFISSAO.valor;
 

@@ -94,25 +94,25 @@ public class Busca {
         return null;
     }
 
-    public static Cliente hashCliente(int id) { 
-    	try (RandomAccessFile raf = new RandomAccessFile(CAMINHO_CLIENTES, "r")) {
-    		Integer clientePos = BaseDeDados.getPosHash("Cliente",id);
-    		if(clientePos == null) {
-    			System.out.println("Cliente não existe na base de dados.");
-    			return null;
-    		}
-    		raf.seek((clientePos - 1) * TAMANHO_REGISTRO_CLIENTE);
-    		
-    		Cliente cliente = lerRegistroCliente(raf);
-    		
-    		if(cliente.getId() == id) {
-    			return cliente;
-    		}
-    	}catch (IOException e) {
-            System.err.println("Erro ao ler o arquivo de clientes: " + e.getMessage());
-        }
-    	return null;
-    }
+//    public static Cliente hashCliente(int id) { 
+//    	try (RandomAccessFile raf = new RandomAccessFile(CAMINHO_CLIENTES, "r")) {
+//    		Integer clientePos = BaseDeDados.getPosHash("Cliente",id);
+//    		if(clientePos == null) {
+//    			System.out.println("Cliente não existe na base de dados.");
+//    			return null;
+//    		}
+//    		raf.seek((clientePos - 1) * TAMANHO_REGISTRO_CLIENTE);
+//    		
+//    		Cliente cliente = lerRegistroCliente(raf);
+//    		
+//    		if(cliente.getId() == id) {
+//    			return cliente;
+//    		}
+//    	}catch (IOException e) {
+//            System.err.println("Erro ao ler o arquivo de clientes: " + e.getMessage());
+//        }
+//    	return null;
+//    }
     
     public static Profissional binariaProfissional(int id) {
         try (RandomAccessFile raf = new RandomAccessFile(CAMINHO_PROFISSIONAIS, "r")) {
@@ -138,26 +138,26 @@ public class Busca {
         return null;
     }
     
-    public static Profissional hashProfissional(int id) { 
-    	try (RandomAccessFile raf = new RandomAccessFile(CAMINHO_PROFISSIONAIS, "r")) {
-    		Integer profissionalPos = BaseDeDados.getPosHash("Profissional",id);
-    		
-    		if(profissionalPos == null) {
-    			System.out.println("Profissional não existe na base de dados.");
-    			return null;
-    		}    		
-    		raf.seek((profissionalPos - 1) * TAMANHO_REGISTRO_PROFISSIONAL);
-    		
-    		Profissional profissional = lerRegistroProfissional(raf);
-    		
-    		if(profissional.getId() == id) {    			
-    			return profissional;
-    		}
-    	}catch (IOException e) {
-            System.err.println("Erro ao ler o arquivo de clientes: " + e.getMessage());
-        }
-    	return null;
-    }
+//    public static Profissional hashProfissional(int id) { 
+//    	try (RandomAccessFile raf = new RandomAccessFile(CAMINHO_PROFISSIONAIS, "r")) {
+//    		Integer profissionalPos = BaseDeDados.getPosHash("Profissional",id);
+//    		
+//    		if(profissionalPos == null) {
+//    			System.out.println("Profissional não existe na base de dados.");
+//    			return null;
+//    		}    		
+//    		raf.seek((profissionalPos - 1) * TAMANHO_REGISTRO_PROFISSIONAL);
+//    		
+//    		Profissional profissional = lerRegistroProfissional(raf);
+//    		
+//    		if(profissional.getId() == id) {    			
+//    			return profissional;
+//    		}
+//    	}catch (IOException e) {
+//            System.err.println("Erro ao ler o arquivo de clientes: " + e.getMessage());
+//        }
+//    	return null;
+//    }
     
     
     public static Horario sequencialHorario(Date horario) {
@@ -229,39 +229,39 @@ public class Busca {
         return null;
     }
 
-    public static Horario hashHorario(Date horario) { 
-    	try (RandomAccessFile raf = new RandomAccessFile(CAMINHO_HORARIOS, "r")) {
-    		Integer horarioPos = BaseDeDados.getPosHorarioHash(horario);
-    		
-    		if(horarioPos == null) {
-    			System.out.println("Horario não existe na base de dados.");
-    			return null;
-    		}  
-    		raf.seek((horarioPos - 1) * TAMANHO_REGISTRO_HORARIO);
-    		
-    		long horarioLido = raf.readLong();
-            if (horarioLido == horario.getTime()) {
-                Horario horarioEncontrado = new Horario(new Date(horarioLido));
-                List<ListaAgendados> pessoasAgendadas = new ArrayList<>();
-                
-                raf.seek(raf.getFilePointer()); // Pular para a parte das pessoas agendadas
-                for (int i = 0; i < 10; i++) {
-                    int idCliente = raf.readInt();
-                    int idProfissional = raf.readInt();
-                    ListaAgendados agendado = new ListaAgendados();
-                    agendado.setId_cliente(idCliente);
-                    agendado.setId_profissional(idProfissional);
-                    pessoasAgendadas.add(agendado);
-                }
-                
-                horarioEncontrado.setAgendamentos(pessoasAgendadas);
-                return horarioEncontrado;
-            }
-    	}catch (IOException e) {
-            System.err.println("Erro ao ler o arquivo de clientes: " + e.getMessage());
-        }
-    	return null;
-    }
+//    public static Horario hashHorario(Date horario) { 
+//    	try (RandomAccessFile raf = new RandomAccessFile(CAMINHO_HORARIOS, "r")) {
+//    		Integer horarioPos = BaseDeDados.getPosHorarioHash(horario);
+//    		
+//    		if(horarioPos == null) {
+//    			System.out.println("Horario não existe na base de dados.");
+//    			return null;
+//    		}  
+//    		raf.seek((horarioPos - 1) * TAMANHO_REGISTRO_HORARIO);
+//    		
+//    		long horarioLido = raf.readLong();
+//            if (horarioLido == horario.getTime()) {
+//                Horario horarioEncontrado = new Horario(new Date(horarioLido));
+//                List<ListaAgendados> pessoasAgendadas = new ArrayList<>();
+//                
+//                raf.seek(raf.getFilePointer()); // Pular para a parte das pessoas agendadas
+//                for (int i = 0; i < 10; i++) {
+//                    int idCliente = raf.readInt();
+//                    int idProfissional = raf.readInt();
+//                    ListaAgendados agendado = new ListaAgendados();
+//                    agendado.setId_cliente(idCliente);
+//                    agendado.setId_profissional(idProfissional);
+//                    pessoasAgendadas.add(agendado);
+//                }
+//                
+//                horarioEncontrado.setAgendamentos(pessoasAgendadas);
+//                return horarioEncontrado;
+//            }
+//    	}catch (IOException e) {
+//            System.err.println("Erro ao ler o arquivo de clientes: " + e.getMessage());
+//        }
+//    	return null;
+//    }
     
     private static Cliente lerRegistroCliente(DataInputStream dis) throws IOException {
         int id = dis.readInt();
@@ -270,7 +270,7 @@ public class Busca {
         String telefone = lerCampo(dis, TAMANHO_TELEFONE);
         String dataNascimento = lerCampo(dis, TAMANHO_DATA_NASCIMENTO);
         String endereco = lerCampo(dis, TAMANHO_ENDERECO);
-        return new Cliente(id, nome, cpf, telefone, dataNascimento, endereco);
+        return new Cliente(id, nome, cpf, telefone, dataNascimento, endereco,-1);
     }
 
     private static Cliente lerRegistroCliente(RandomAccessFile raf) throws IOException {
@@ -280,7 +280,7 @@ public class Busca {
         String telefone = lerCampo(raf, TAMANHO_TELEFONE);
         String dataNascimento = lerCampo(raf, TAMANHO_DATA_NASCIMENTO);
         String endereco = lerCampo(raf, TAMANHO_ENDERECO);
-        return new Cliente(id, nome, cpf, telefone, dataNascimento, endereco);
+        return new Cliente(id, nome, cpf, telefone, dataNascimento, endereco,-1);
     }
 
     

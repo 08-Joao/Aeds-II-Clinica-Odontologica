@@ -8,8 +8,11 @@ public enum TamanhoCampo {
     DATA_NASCIMENTO(10),
     ENDERECO(100),
     PROFISSAO(50),
-
-    REGISTRO_CLIENTE(ID.valor + NOME.valor + CPF.valor + TELEFONE.valor + DATA_NASCIMENTO.valor + ENDERECO.valor),
+    TAMANHO_HASHTABLE(10),
+    POSICAO(4),
+    
+    
+    REGISTRO_CLIENTE(ID.valor + NOME.valor + CPF.valor + TELEFONE.valor + DATA_NASCIMENTO.valor + ENDERECO.valor + POSICAO.valor),
     REGISTRO_PROFISSIONAL(ID.valor + NOME.valor + CPF.valor + TELEFONE.valor + DATA_NASCIMENTO.valor + ENDERECO.valor + PROFISSAO.valor),
 
     HORARIO(8),
@@ -17,6 +20,7 @@ public enum TamanhoCampo {
     TOTAL_AGENDAMENTOS(LISTA_AGENDADOS.valor * 10),
     REGISTRO_HORARIO(HORARIO.valor + TOTAL_AGENDAMENTOS.valor);
 
+	
     public final int valor;
 
     TamanhoCampo(int valor) {

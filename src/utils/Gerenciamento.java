@@ -10,6 +10,7 @@ import java.util.Scanner;
 import entities.BaseDeDados;
 import entities.Cliente;
 import entities.Profissional;
+import entities.TabelaHashDisco;
 
 
 //Classe responsável por gerenciar operações relacionadas a clientes e profissionais
@@ -39,7 +40,7 @@ public class Gerenciamento {
 
     
     
-	public static void adicionarCliente() throws IOException {
+	public static void adicionarCliente(TabelaHashDisco tabelaHash) throws IOException {
 
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Digite o nome do cliente:");
@@ -56,7 +57,7 @@ public class Gerenciamento {
 		try (RandomAccessFile arquivo = new RandomAccessFile("clientes.dat", "rw")) {
 			Long posicaoAtual = arquivo.length();
 			Integer id = (int) ((posicaoAtual / TAMANHO_REGISTRO_CLIENTE) + 1);
-			Cliente cliente = new Cliente(id, nome, cpf, telefone, dataNascimento, endereco);
+			Cliente cliente = new Cliente(id, nome, cpf, telefone, dataNascimento, endereco,id);
 
 			arquivo.seek(posicaoAtual);
 			arquivo.writeInt(cliente.getId());
@@ -66,7 +67,7 @@ public class Gerenciamento {
 			arquivo.writeBytes(cliente.getDataNascimento());
 			arquivo.writeBytes(cliente.getEndereco());
 			
-			BaseDeDados.hashAdd("Cliente", id);
+			tabelaHash.inserir(cliente);
 		}
 	}
 
@@ -104,7 +105,7 @@ public class Gerenciamento {
 		}
 	}
 
-	public static void removerCliente(Integer id) throws FileNotFoundException, IOException {
+	public static void removerCliente(Integer id, TabelaHashDisco tabelaHash) throws FileNotFoundException, IOException {
 		File arquivoOriginal = new File("clientes.dat");
 		File arquivoTemp = new File("clientes.tmp.dat");
 
@@ -142,7 +143,7 @@ public class Gerenciamento {
 			System.out.println("\nNão foi possível renomear o arquivo temporário.");
 		} else {
 			System.out.println("\nRegistro excluído com sucesso!");
-			BaseDeDados.hashRemove("Cliente", id);
+			tabelaHash.mapearClientesParaHash();
 			Consultas.removerConsultas(id, 0);
 		}
 	}

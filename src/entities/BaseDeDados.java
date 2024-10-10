@@ -29,7 +29,9 @@ public class BaseDeDados {
     private static final int TAMANHO_DATA_NASCIMENTO = TamanhoCampo.DATA_NASCIMENTO.valor;
     private static final int TAMANHO_ENDERECO = TamanhoCampo.ENDERECO.valor;
     private static final int TAMANHO_PROFISSAO = TamanhoCampo.PROFISSAO.valor;
-
+    private static final int POSICAO = TamanhoCampo.POSICAO.valor;
+    
+    
     private static final int TAMANHO_REGISTRO_CLIENTE = TamanhoCampo.REGISTRO_CLIENTE.valor;
     private static final int TAMANHO_REGISTRO_PROFISSIONAL = TamanhoCampo.REGISTRO_PROFISSIONAL.valor;
 
@@ -45,6 +47,10 @@ public class BaseDeDados {
 
     
     // ATIVIDADE AVALIATIVA 3
+    
+    
+
+    
     
 	public static Hashtable<Integer, Integer> cHt = new Hashtable(); // Hash Table da base de Clientes
 	public static Hashtable<Integer, Integer> pHt = new Hashtable(); // Hash Table da base de Profissionais
@@ -142,7 +148,7 @@ public class BaseDeDados {
 		});
 	}
     
-	public static void criarBasesDesordenada(String type, int size) {
+	public static void criarBasesDesordenada(String type, int size, TabelaHashDisco tabelaHash) {
 		List<Cliente> clientes = new ArrayList<>();
 		List<Profissional> profissionais = new ArrayList<>();
 		Random random = new Random();
@@ -152,7 +158,7 @@ public class BaseDeDados {
 			for (int i = 1; i <= size; i++) {
 				Cliente cliente = new Cliente(i, GeneralUsage.gerarNome(), GeneralUsage.gerarCPF(),
 						GeneralUsage.gerarTelefone(), GeneralUsage.gerarDataNascimento(false),
-						GeneralUsage.gerarEndereco()); // Cria um cliente
+						GeneralUsage.gerarEndereco(),-1); // Cria um cliente
 				clientes.add(cliente);
 			}
 
@@ -161,7 +167,8 @@ public class BaseDeDados {
 			try (DataOutputStream dosClientes = new DataOutputStream(new FileOutputStream(CAMINHO_CLIENTES))) {
 				for (Cliente cliente : clientes) {					
 					escreverRegistroCliente(dosClientes, cliente);
-				}								
+				}		
+//				tabelaHash.mapearClientesParaHash();
 			} catch (IOException e) {
 				System.err.println("Erro ao manipular o arquivo de clientes: " + e.getMessage());
 			}
@@ -273,14 +280,15 @@ public class BaseDeDados {
 		}
 	}
 
-	private static Cliente lerRegistroCliente(DataInputStream dis) throws IOException {
+	static Cliente lerRegistroCliente(DataInputStream dis) throws IOException {
 		int id = dis.readInt();
 		String nome = lerCampo(dis, TAMANHO_NOME);
 		String cpf = lerCampo(dis, TAMANHO_CPF);
 		String telefone = lerCampo(dis, TAMANHO_TELEFONE);
 		String dataNascimento = lerCampo(dis, TAMANHO_DATA_NASCIMENTO);
 		String endereco = lerCampo(dis, TAMANHO_ENDERECO);
-		return new Cliente(id, nome, cpf, telefone, dataNascimento, endereco);
+		String posicao = lerCampo(dis, POSICAO);
+		return new Cliente(id, nome, cpf, telefone, dataNascimento, endereco,posicao);
 	}
 
 	private static Profissional lerRegistroProfissional(DataInputStream dis) throws IOException {
